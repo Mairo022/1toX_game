@@ -184,7 +184,7 @@ public class Game1 : Game
             if (_lastMouseState.LeftButton == ButtonState.Pressed)
             {
                 UnfocusInputFields();
-                _tilesInput.HandleMouseClick();
+                _tilesInput.HandleMouseClick(_lastMouseState.Position);
             }
         }
         else if (intersectsTimeInput)
@@ -195,7 +195,7 @@ public class Game1 : Game
             if (_lastMouseState.LeftButton == ButtonState.Pressed)
             {
                 UnfocusInputFields();
-                _timeInput.HandleMouseClick();
+                _timeInput.HandleMouseClick(_lastMouseState.Position);
             }
         }
         else
