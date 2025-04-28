@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,7 +24,7 @@ public class Game1 : Game
     int _totalTiles = 7;
 
     SpriteBatch _spriteBatch;
-    SpriteFont _font;
+    FontSystem _fontSystem = new();
     Title _title;
     Board _board;
     Button _startBtn;
@@ -62,24 +64,25 @@ public class Game1 : Game
         _tilesRevealedCycles = GetTilesRevealedCycles(_tilesRevealedMs);
         
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _font = Content.Load<SpriteFont>("Arial_24");
         
-        _title = new Title(_font);
+        _fontSystem.AddFont(File.ReadAllBytes("Content/Roboto-Regular.ttf"));
+        
+        _title = new Title(_fontSystem);
         _board = new Board(GraphicsDevice);
         _startBtn = new Button(GraphicsDevice,
             new Point(120, 50), 
             new Point(GraphicsDevice.Viewport.Width - PaddingX - 120, _board.Position.Y - PaddingY/2 - 50), 
-            "Start", _font);
+            "Start", _fontSystem);
         
         _timeInput = new InputField(GraphicsDevice,
             new Point(100, 50), 
             new Point(PaddingX, _startBtn.Position.Y), 
-            _tilesRevealedMs.ToString(), _font, 1000);
+            _tilesRevealedMs.ToString(), _fontSystem, 1000);
         
         _tilesInput = new InputField(GraphicsDevice,
             new Point(100, 50), 
             new Point(_timeInput.Position.X + PaddingX/2 + _timeInput.Size.X, _startBtn.Position.Y), 
-            _totalTiles.ToString(), _font, 16);
+            _totalTiles.ToString(), _fontSystem, 16);
     }
 
     protected override void Update(GameTime gameTime)
@@ -151,8 +154,7 @@ public class Game1 : Game
         {
             value++;
             _tiles.Add(new Tile(GraphicsDevice, new Point(70, 70), 
-                    _board.Positions[posIndexes[i]], value, _font) 
-                {SecondaryColor = Color.LightSteelBlue});
+                    _board.Positions[posIndexes[i]], value, _fontSystem));
         }
     }
 

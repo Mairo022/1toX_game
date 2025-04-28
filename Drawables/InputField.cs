@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using _1toX.shared;
 using _1toX.utils;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,8 +12,7 @@ public class InputField : CustomRectangle
 {
     readonly Vector2 _textPosition;
     readonly Color _textColor = new (120, 120, 120);
-    readonly float _fontScale = .2f;
-    readonly SpriteFont _font;
+    readonly SpriteFontBase _font;
     
     readonly int _maxValue;
     int _curCharIndex;
@@ -24,11 +24,11 @@ public class InputField : CustomRectangle
     readonly Border _border;
     readonly Caret _caret;
     
-    public InputField(GraphicsDevice graphicsDevice, Point size, Point position, string text, SpriteFont font, int maxValue, bool addBorder = true)
+    public InputField(GraphicsDevice graphicsDevice, Point size, Point position, string text, FontSystem fontSystem, int maxValue, bool addBorder = true)
         : base(graphicsDevice, size, position, Color.White)
     {
         _text = text;
-        _font = font;
+        _font = fontSystem.GetFont(24);
         _maxValue = maxValue;
         
         _isBorderActive = addBorder;
@@ -40,12 +40,12 @@ public class InputField : CustomRectangle
                 new Color(140, 140, 140),
                 new Color(10, 10, 10));
         
-        var textSize = font.MeasureString(text) * _fontScale;
+        var textSize = _font.MeasureString(text);
         var avgCharSize = (int) (textSize.X / _text.Length);
         
         _textPosition = new Vector2(
             Position.X + 16, 
-            Position.Y + (Size.Y - textSize.Y) + 3);
+            Position.Y + (Size.Y - textSize.Y)/2);
         
         _caret = new Caret(graphicsDevice, _textPosition, avgCharSize, _text.Length);
     }
@@ -129,9 +129,7 @@ public class InputField : CustomRectangle
     void DrawText(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
-        spriteBatch.DrawString(
-            _font, _text, _textPosition, _textColor, 
-            0, Vector2.Zero, _fontScale, SpriteEffects.None, 0.5f);
+        spriteBatch.DrawString(_font, _text, _textPosition, _textColor);
         spriteBatch.End();
     }
 }

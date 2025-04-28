@@ -12,11 +12,21 @@
         <ApplicationIcon>Icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.2.1105"/>
-        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105"/>
+        <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.10" />
+        <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.2.1105" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Content\fonts\" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Content\Roboto-Regular.ttf" />
+      <Content Include="Content\Roboto-Regular.ttf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
-        <Message Text="Restoring dotnet tools" Importance="High"/>
-        <Exec Command="dotnet tool restore"/>
+        <Message Text="Restoring dotnet tools" Importance="High" />
+        <Exec Command="dotnet tool restore" />
     </Target>
 </Project>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _1toX;
@@ -9,31 +10,30 @@ public class Button : CustomRectangle
 
     Vector2 _textSize;
     Vector2 _textPosition;
-    readonly float _fontScale = .2f;
-    readonly SpriteFont _font;
+    readonly SpriteFontBase _font;
     
-    public Button(GraphicsDevice graphicsDevice, Point size, Point position, string text, SpriteFont font) 
+    public Button(GraphicsDevice graphicsDevice, Point size, Point position, string text, FontSystem fontSystem) 
         : base(graphicsDevice, size, position, Color.DarkGray)
     {
         _text = text;
-        _font = font;
+        _font = fontSystem.GetFont(24);
         
-        _textSize = font.MeasureString(text) * _fontScale;
+        _textSize = _font.MeasureString(text);
         
         _textPosition = new Vector2(
             Position.X + (Size.X - _textSize.X)/2, 
-            Position.Y + (Size.Y - _textSize.Y) + 1);
+            Position.Y + (Size.Y - _textSize.Y)/2);
     }
 
     public void ChangeText(string text)
     {
         _text = text;
         
-        _textSize = _font.MeasureString(text) * _fontScale;
+        _textSize = _font.MeasureString(text);
         
         _textPosition = new Vector2(
             Position.X + (Size.X - _textSize.X)/2, 
-            Position.Y + (Size.Y - _textSize.Y) + 1);
+            Position.Y + (Size.Y - _textSize.Y)/2);
     }
     
     public override void Draw(SpriteBatch spriteBatch)
@@ -45,9 +45,7 @@ public class Button : CustomRectangle
     void DrawText(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
-        spriteBatch.DrawString(
-            _font, _text, _textPosition, Color.Black, 
-            0, Vector2.Zero, _fontScale, SpriteEffects.None, 0.5f);
+        spriteBatch.DrawString(_font, _text, _textPosition, Color.Black);
         spriteBatch.End();
     }
 }
