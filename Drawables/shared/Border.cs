@@ -16,9 +16,9 @@ public class Border
     {
         // Top, bottom, left, right
         _borders.Add(new Rectangle(position.X, position.Y, size.X, width));
-        _borders.Add(new Rectangle(position.X, position.Y + size.Y, size.X, width));
-        _borders.Add(new Rectangle(position.X, position.Y, 1, size.Y));
-        _borders.Add(new Rectangle(position.X + size.X, position.Y, width, size.Y + width));
+        _borders.Add(new Rectangle(position.X, position.Y + size.Y - width, size.X, width));
+        _borders.Add(new Rectangle(position.X, position.Y, width, size.Y));
+        _borders.Add(new Rectangle(position.X + size.X - width, position.Y, width, size.Y));
         
         _texture = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
         _texture.SetData([Color.White]);

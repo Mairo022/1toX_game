@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using _1toX.utils;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,9 +15,6 @@ namespace _1toX;
 
 public class Game1 : Game
 {
-    public const int PaddingX = 24;
-    public const int PaddingY = 24;
-
     int _tilesRevealedCycles;
     int _tilesRevealedMs;
     int _cyclesPassed;
@@ -24,14 +22,13 @@ public class Game1 : Game
     int _totalTiles = 7;
 
     SpriteBatch _spriteBatch;
-    FontSystem _fontSystem = new();
+    FontSystem _fontSystem;
     Title _title;
     Board _board;
     Button _startBtn;
     InputField _timeInput;
     InputField _tilesInput;
     
-    Color _bgColor = new(250, 248, 239);
     GameState _gameState;
     
     bool _lmbPressed;
@@ -39,7 +36,7 @@ public class Game1 : Game
     KeyboardState _keyboard;
     KeyboardState _keyboardLast;
     
-    List<Tile> _tiles = [];
+    readonly List<Tile> _tiles = [];
     int _lastPickedValue = -1;
 
     public Game1()
@@ -47,8 +44,8 @@ public class Game1 : Game
         var graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        graphics.PreferredBackBufferWidth = 440;
-        graphics.PreferredBackBufferHeight = 640;
+        graphics.PreferredBackBufferWidth = Constants.BoardWidth;
+        graphics.PreferredBackBufferHeight = Constants.HeaderHeight + Constants.BoardHeight;
         Window.Position = new Point(0, 600);
     }
 
@@ -65,24 +62,28 @@ public class Game1 : Game
         
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         
+        _fontSystem = new FontSystem();
         _fontSystem.AddFont(File.ReadAllBytes("Content/Roboto-Regular.ttf"));
         
-        _title = new Title(_fontSystem);
+        _title = new Title(_fontSystem, GraphicsDevice);
+        
         _board = new Board(GraphicsDevice);
+        
         _startBtn = new Button(GraphicsDevice,
-            new Point(120, 50), 
-            new Point(GraphicsDevice.Viewport.Width - PaddingX - 120, _board.Position.Y - PaddingY/2 - 50), 
+            new Point(Constants.ButtonSizeX, Constants.ButtonSizeY),
+            new Point((GraphicsDevice.Viewport.Width - Constants.ButtonSizeX)/2, Constants.PaddingHeaderY + 20 + Constants.InputLabelGapY),
             "Start", _fontSystem);
         
         _timeInput = new InputField(GraphicsDevice,
-            new Point(100, 50), 
-            new Point(PaddingX, _startBtn.Position.Y), 
-            _tilesRevealedMs.ToString(), _fontSystem, 1000);
+            new Point(Constants.InputSizeX, Constants.InputSizeY),
+            new Point(Constants.PaddingHeaderX, Constants.PaddingHeaderY + 20 + Constants.InputLabelGapY),
+            _tilesRevealedMs.ToString(), _fontSystem, 1000, "Time");
         
         _tilesInput = new InputField(GraphicsDevice,
-            new Point(100, 50), 
-            new Point(_timeInput.Position.X + PaddingX/2 + _timeInput.Size.X, _startBtn.Position.Y), 
-            _totalTiles.ToString(), _fontSystem, 16);
+            new Point(Constants.InputSizeX, Constants.InputSizeY),
+            new Point(GraphicsDevice.Viewport.Width - Constants.PaddingHeaderX - Constants.InputSizeX, 
+                Constants.PaddingHeaderY + 20 + Constants.InputLabelGapY),
+            _totalTiles.ToString(), _fontSystem, 16, "Tile");
     }
 
     protected override void Update(GameTime gameTime)
@@ -119,7 +120,7 @@ public class Game1 : Game
     
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(_bgColor);
+        GraphicsDevice.Clear(Color.White);
         
         _title.Draw(_spriteBatch);
         _board.Draw(_spriteBatch);
@@ -153,7 +154,7 @@ public class Game1 : Game
         for (var i = 0; i < _totalTiles; i++)
         {
             value++;
-            _tiles.Add(new Tile(GraphicsDevice, new Point(70, 70), 
+            _tiles.Add(new Tile(GraphicsDevice, new Point(Constants.TileSize, Constants.TileSize), 
                     _board.Positions[posIndexes[i]], value, _fontSystem));
         }
     }

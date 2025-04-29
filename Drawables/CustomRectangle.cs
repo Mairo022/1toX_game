@@ -14,9 +14,9 @@ public class CustomRectangle
 
     Color _activeColor;
     public Color Color;
-    public Color SecondaryColor;
+    public Color HoverColor;
 
-    public CustomRectangle(GraphicsDevice graphicsDevice, Point size, Point position, Color color)
+    public CustomRectangle(GraphicsDevice graphicsDevice, Point size, Point position, Color color, Color hoverColor = default)
     {
         Size = size;
         Position = position;
@@ -29,8 +29,11 @@ public class CustomRectangle
     }
 
     public void UsePrimaryColor() { _activeColor = Color; }
-    public void UseSecondaryColor() { _activeColor = SecondaryColor; }
-    public void UseHoverColor() { _activeColor = DarkenColor(Color, 0.8f); }
+
+    public void UseHoverColor()
+    {
+        _activeColor = HoverColor.A == 0 ? DarkenColor(Color, 0.9f) : HoverColor;
+    }
     
     protected static Color DarkenColor(Color color, float factor)
     {

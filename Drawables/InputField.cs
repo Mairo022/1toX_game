@@ -5,6 +5,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Label = _1toX.shared.Label;
 
 namespace _1toX;
 
@@ -22,13 +23,15 @@ public class InputField : CustomRectangle
     
     readonly bool _isBorderActive;
     readonly Border _border;
-    readonly Caret _caret;
     
-    public InputField(GraphicsDevice graphicsDevice, Point size, Point position, string text, FontSystem fontSystem, int maxValue, bool addBorder = true)
-        : base(graphicsDevice, size, position, Color.White)
+    readonly Caret _caret;
+    readonly Label _label;
+    
+    public InputField(GraphicsDevice graphicsDevice, Point size, Point position, string text, FontSystem fontSystem,
+        int maxValue, string labelText, bool addBorder = true) : base(graphicsDevice, size, position, Color.White)
     {
         _text = text;
-        _font = fontSystem.GetFont(24);
+        _font = fontSystem.GetFont(Constants.FontSizeHeader);
         _maxValue = maxValue;
         
         _isBorderActive = addBorder;
@@ -37,17 +40,18 @@ public class InputField : CustomRectangle
             _border = new Border(
                 graphicsDevice,
                 position, size,
-                new Color(140, 140, 140),
-                new Color(10, 10, 10));
+                new Color(135, 135, 135),
+                new Color(75, 75, 75));
         
         var textSize = _font.MeasureString(text);
         var avgCharSize = (int) (textSize.X / _text.Length);
         
         _textPosition = new Vector2(
             Position.X + 16, 
-            Position.Y + (Size.Y - textSize.Y)/2);
+            Position.Y + (Size.Y - textSize.Y)/2 - 1);
         
         _caret = new Caret(graphicsDevice, _textPosition, avgCharSize, _text.Length);
+        _label = new Label(fontSystem, labelText, position, size);
     }
     
     public void HandleWrite(KeyboardState keyboard, KeyboardState oldKeyboard, out string value)
@@ -122,6 +126,7 @@ public class InputField : CustomRectangle
     {
         base.Draw(spriteBatch);
         DrawText(spriteBatch);
+        _label.Draw(spriteBatch);
         if (_isBorderActive) _border.Draw(spriteBatch, _isFocused);
         if (_isFocused) _caret.Draw(spriteBatch);
     }

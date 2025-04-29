@@ -1,4 +1,5 @@
 ﻿using System;
+using _1toX.utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -34,7 +35,7 @@ public class Caret
     
     void CreateCaretRectangle(int xPos)
     {
-        _caret = new Rectangle(xPos, (int)_textPosition.Y, 2, 32);
+        _caret = new Rectangle(xPos, (int)_textPosition.Y-2, 1, Constants.FontSizeHeader + 2);
     }
     
     public void MoveCaret(int x, int textLength, out int curCharIndex)

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using _1toX.utils;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FontStashSharp;
 
@@ -7,23 +9,24 @@ namespace _1toX;
 public class Title
 {
     const string Text = "1toX";
-    SpriteFontBase _font;
-    readonly Color _textColor = new(119, 110, 101);
+    readonly SpriteFontBase _font;
+    readonly Color _color = new(81, 81, 81);
     
     readonly Vector2 _position;
 
-    public Title(FontSystem fontSystem)
+    public Title(FontSystem fontSystem, GraphicsDevice graphicsDevice)
     {
-        _position.X = Game1.PaddingX;
-        _position.Y =  Game1.PaddingY - 10;
-        
-        _font = fontSystem.GetFont(20);
+        _font = fontSystem.GetFont(Constants.FontSizeHeader);
+        var size = _font.MeasureString(Text);
+
+        _position.X = (graphicsDevice.Viewport.Width - size.X) / 2;
+        _position.Y = Constants.PaddingHeaderY;
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        spriteBatch.DrawString(_font, Text, _position, _textColor);
+        spriteBatch.Begin();
+        spriteBatch.DrawString(_font, Text, _position, _color);
         spriteBatch.End();
     }
 }
